@@ -1,0 +1,6 @@
+<launch>
+   
+   <node pkg="aiims_teleop" type="camera_leader.py" name="camera1" output="screen"></node>
+   <node pkg="aiims_teleop" type="leader.py" name="haptic" output="screen"></node>
+   </launch>
+

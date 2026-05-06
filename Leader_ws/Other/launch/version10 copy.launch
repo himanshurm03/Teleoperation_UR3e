@@ -1,0 +1,10 @@
+<launch>
+
+  <!-- <node pkg="aiims_teleop" type="final_haptic_camera_node_2.py" name="camera1" output="screen"></node>-->
+   <!--<node pkg="aiims_teleop" type="version0_2_2.py" name="haptic" output="screen"></node>-->
+   <node pkg="aiims_teleop" type="version0_leader5.py" name="haptic" output="screen"></node>
+   <node pkg="aiims_teleop" type="test_masterdelay.py" name="master_delay_node" output="screen"></node>
+   <!--<node pkg="aiims_teleop" type="pose_m2s.py" name="pose_timestamp_logger" output="screen"></node>-->
+   <node pkg="aiims_teleop" type="phantom_timestamps.py" name="phantom_timestamp_logger" output="screen"></node>
+   <node pkg="aiims_teleop" type="force_timestamps.py" name="force_timestamp_logger" output="screen"></node>
+</launch>

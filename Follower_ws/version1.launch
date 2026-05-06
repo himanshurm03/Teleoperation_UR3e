@@ -1,0 +1,6 @@
+<launch>
+   <node pkg="ur_robot_driver" type="follower_pose.py" name="robot_end_effector_controller" output="screen"></node>
+   <node pkg="ur_robot_driver" type="follower_force.py" name="haptic_force_controller" output="screen"></node>
+   <node pkg="ur_robot_driver" type="test_slave_delay.py" name="slave_delay_node" output="screen"></node>   
+   <node pkg="ur_robot_driver" type="camera_follower.py" name="camera" output="screen"></node> 
+</launch> 

@@ -1,0 +1,8 @@
+<launch>
+
+   <node pkg="ur_robot_driver" type="version0_pose1_1.py" name="robot_end_effector_controller" output="screen"></node>
+   <!--<node pkg="ur_robot_driver" type="version0_force.py" name="haptic_force_controller" output="screen"></node>-->
+   <node pkg="ur_robot_driver" type="test_force3.py" name="haptic_force_controller" output="screen"></node>
+   <!--<node pkg="ur_robot_driver" type="camera_nod2_test1.py" name="camera" output="screen"></node>-->
+   <!--<node pkg="ur_robot_driver" type="force_timestamps.py" name="force_timestamp_logger" output="screen"></node>-->
+</launch> 

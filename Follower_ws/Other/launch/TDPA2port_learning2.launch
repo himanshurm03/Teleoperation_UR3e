@@ -1,0 +1,7 @@
+<launch>
+
+   <node pkg="ur_robot_driver" type="TDPA2port_learning3_plot.py" name="slave" output="screen"></node>
+   <node pkg="ur_robot_driver" type="TDPA2port_learning2_pose.py" name="slave_pose" output="screen"></node>
+   <node pkg="ur_robot_driver" type="TDPA2port_learning2_force.py" name="slave_force" output="screen"></node>
+ 
+</launch> 

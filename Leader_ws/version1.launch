@@ -1,0 +1,4 @@
+<launch>
+   <node pkg="aiims_teleop" type="leader.py" name="haptic" output="screen"></node>
+   <node pkg="aiims_teleop" type="test_leader_delay.py" name="master_delay_node" output="screen"></node>
+</launch>

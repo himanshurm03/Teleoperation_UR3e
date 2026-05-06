@@ -1,0 +1,6 @@
+<launch>
+
+   <node pkg="ur_robot_driver" type="impedance_learning_force.py" name="impedance_robot_end_effector_controller" output="screen"></node>
+   <node pkg="ur_robot_driver" type="impedance_learning_pose.py" name="impedance_haptic_force_controller" output="screen"></node>
+ 
+</launch> 

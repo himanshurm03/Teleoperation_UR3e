@@ -1,0 +1,7 @@
+<launch>
+
+   <node pkg="ur_robot_driver" type="experiment.py" name="robot_end_effector_controller" output="screen"></node>
+   <node pkg="ur_robot_driver" type="experiment_ft.py" name="haptic_force_controller" output="screen"></node>
+   <node pkg="ur_robot_driver" type="camera_nod2_test1.py" name="camera_client_node" output="screen"></node>
+ 
+</launch> 

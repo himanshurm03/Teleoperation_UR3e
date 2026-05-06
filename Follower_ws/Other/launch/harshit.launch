@@ -1,0 +1,7 @@
+<launch>
+
+   <node pkg="ur_robot_driver" type="harshit2.py" name="robot_end_effector_controller" output="screen"></node>
+   <node pkg="ur_robot_driver" type="harshit.py" name="haptic_force_controller" output="screen"></node>
+   <node pkg="ur_robot_driver" type="camera_nod2_test1.py" name="camera" output="screen"></node>
+ 
+</launch> 

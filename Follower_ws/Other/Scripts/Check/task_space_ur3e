@@ -1,0 +1,330 @@
+#!/usr/bin/env python3
+
+# import rospy
+# import numpy as np
+# import sys
+# import actionlib
+# from tf2_msgs.msg import TFMessage
+# from cartesian_control_msgs.msg import FollowCartesianTrajectoryAction, FollowCartesianTrajectoryGoal, CartesianTrajectoryPoint
+# from geometry_msgs.msg import Pose, Point, Quaternion
+# from scipy.spatial.transform import Rotation as R
+# import tf.transformations
+
+
+# global linear_pos, cartesian_trajectory_controller,end_eff
+# CARTESIAN_TRAJECTORY_CONTROLLERS = [
+#     "pose_based_cartesian_traj_controller",
+#     "joint_based_cartesian_traj_controller",
+#     "forward_cartesian_traj_controller",
+# ]
+# cartesian_trajectory_controller = CARTESIAN_TRAJECTORY_CONTROLLERS[0]
+# linear_pos = np.empty(3)
+# quaternion = np.empty(4)
+# end_eff = np.empty(3)
+
+# def euler_to_quat(roll_arg,pitch_arg,yaw_arg):
+#     r = R.from_euler('xyz',[roll_arg,pitch_arg,yaw_arg],degrees=False)
+#     quat = r.as_quat()
+#     return quat
+
+# def joint_callback():
+#     global linear_pos,quaternion
+#     n = 6
+#     alp = [np.pi/2, 0, 0, np.pi/2, -np.pi/2, 0]
+#     a = [0, -0.24355, -0.2132, 0, 0, 0]
+#     d = [0.15185, 0, 0, 0.13105, 0.08535, 0.0921]
+    
+# ####  In joint states, the order is given as elbow, shoulder, base, wrist 1, srist 2, wrist 3 #####
+# ####### but we are using base, shoulder, elbow, wrist 1, wrist 2, wrist 3   ##############
+    
+#     #th = np.deg2rad([9.80, -225.01, 107.47, -172.69, -100.40, 270.80])
+
+#     th = np.array([2.694200038909912, -0.053385929470398,  -1.5220253467559814, 3.267535849208496, -2.20729905763735, -3.7819090525256556])
+#     # th3 = np.array([-0.0199572816491127, -1.5056944277933617, -0.8160136381732386, -1.7928153477110804, 0.05683521553874016, -1.5913217703448694])
+
+#     # th4 = np.array([-1.5836808681488037, -1.6044322452940882, 0.18455742299556732, 0.2758564192005615, 1.2517180442810059, -1.1430805365191858])
+
+#     # th5 = np.array([-1.7125895023345947, -1.6050383053221644, -0.7684033552752894, 0.248286171550415, -0.20488149324526006, -1.1430934111224573])
+
+#     #th = np.array(np.deg2rad([9.80, -225.01, 107.47, -172.69, -100.40, 270.80]),[0.8657525221454065, -2.8541490040221156, -0.7304547468768519, -2.436073442498678, -1.308267895375387, -1.5984490553485315],[-0.0199572816491127, -1.5056944277933617, -0.8160136381732386, -1.7928153477110804, 0.05683521553874016, -1.5913217703448694],[-1.5836808681488037, -1.6044322452940882, 0.18455742299556732, 0.2758564192005615, 1.2517180442810059, -1.1430805365191858], [-1.7125895023345947, -1.6050383053221644, -0.7684033552752894, 0.248286171550415, -0.20488149324526006, -1.1430934111224573] )
+
+
+
+
+#     d_E_n = np.array([0, 0, 0.145])
+#     T_i = np.eye(4)
+#     for i in range(n):
+#         T_i_i_m = np.array([
+#             [np.cos(th[i]), -np.sin(th[i]) * np.cos(alp[i]), np.sin(th[i]) * np.sin(alp[i]), a[i] * np.cos(th[i])],
+#             [np.sin(th[i]), np.cos(th[i]) * np.cos(alp[i]), -np.cos(th[i]) * np.sin(alp[i]), a[i] * np.sin(th[i])],
+#             [0, np.sin(alp[i]), np.cos(alp[i]), d[i]],
+#             [0, 0, 0, 1]
+#         ])
+#         T_i_0 = T_i @ T_i_i_m
+#         T_i = T_i_0
+#     T_n_0 = T_i_0
+#     P_E_0 = T_n_0 @ np.append(d_E_n, 1)
+#     p_E_0 = P_E_0[:3]
+
+#     # Extract rotation matrix from T_n_0
+#     R_n_0 = T_n_0[:3, :3]
+
+#     # Compute roll, pitch, and yaw from the rotation matrix
+#     sy = np.sqrt(R_n_0[2, 2] ** 2 + R_n_0[2, 1] ** 2)
+#     singular = sy < 1e-6
+
+#     if not singular:
+#         roll = np.arctan2(R_n_0[2, 1], R_n_0[2, 2])
+#         pitch = np.arctan2(-R_n_0[2, 0], sy)
+#         yaw = np.arctan2(R_n_0[1, 0], R_n_0[0, 0])
+#     else:
+#         roll = np.arctan2(-R_n_0[1, 2], R_n_0[1, 1])
+#         pitch = np.arctan2(-R_n_0[2, 0], sy)
+#         yaw = 0
+    
+#     linear_pos = p_E_0
+
+#     quaternion = euler_to_quat(roll,pitch,yaw)
+#     #quaternion = np.array([0,0,0,1])
+#     #quaternion = tf.transformations.quaternion_from_euler(roll,pitch,yaw)
+#     print("Linear pose: ",linear_pos)
+#     print(f"Roll: {roll}, pitch: {pitch}, yaw: {yaw}")
+#     print("Quaternions: ",quaternion)
+
+# def send_cartesian_trajectory():
+#     global linear_pos, cartesian_trajectory_controller, quaternion
+#     rospy.sleep(5)  # Wait for action server to start
+#     goal = FollowCartesianTrajectoryGoal()
+#     trajectory_client = actionlib.SimpleActionClient(
+#         "{}/follow_cartesian_trajectory".format(cartesian_trajectory_controller),
+#         FollowCartesianTrajectoryAction,
+#     )
+#     timeout = rospy.Duration(1)
+#     if not trajectory_client.wait_for_server(timeout):
+#         rospy.logerr("Could not reach controller action server.")
+#         sys.exit(-1)
+#     if linear_pos is None or linear_pos.size != 3:
+#         rospy.logerr("Linear position is not set correctly.")
+#         sys.exit(-1)
+#     point = CartesianTrajectoryPoint()
+#     point.pose.position = Point(*linear_pos)
+#     point.pose.orientation = Quaternion(*quaternion)
+#     point.time_from_start = rospy.Duration(6)
+#     goal.trajectory.points.append(point)
+#     trajectory_client.send_goal(goal)
+#     #point.time_from_start = rospy.Duration(3)
+#     trajectory_client.wait_for_result()
+
+# def tf_callback(msg):
+    
+#     global end_eff
+#     Xee = msg.transforms[0].transform.translation.x
+#     Yee = msg.transforms[0].transform.translation.y
+#     Zee = msg.transforms[0].transform.translation.z
+    
+#     end_eff = np.array([Xee,Yee,Zee])
+#     #print("Xee: ",Xee)
+
+# # def send_cartesian_trajectory():
+# #     global linear_pos, cartesian_trajectory_controller, quaternion,end_eff
+
+# #     rospy.sleep(5)  # Wait for action server to start
+# #     goal = FollowCartesianTrajectoryGoal()
+# #     trajectory_client = actionlib.SimpleActionClient(
+# #         "{}/follow_cartesian_trajectory".format(cartesian_trajectory_controller),
+# #         FollowCartesianTrajectoryAction,
+# #     )
+# #     timeout = rospy.Duration(1)
+# #     if not trajectory_client.wait_for_server(timeout):
+# #         rospy.logerr("Could not reach controller action server.")
+# #         sys.exit(-1)
+# #     if linear_pos is None or linear_pos.size != 3:
+# #         rospy.logerr("Linear position is not set correctly.")
+# #         sys.exit(-1)
+
+# #     # Example parameters
+# #     start_pos = end_eff  # Starting position
+# #     end_pos = linear_pos  # Ending position from joint callback
+# #     velocity = 0.05  # Desired constant velocity in meters per second
+# #     distance = np.linalg.norm(end_pos - start_pos)
+# #     total_time = distance / velocity
+
+# #     num_points = 5  # Number of intermediate points
+# #     times = np.linspace(0, total_time, num_points)
+# #     positions = np.linspace(start_pos, end_pos, num_points)
+
+# #     for i in range(num_points):
+# #         point = CartesianTrajectoryPoint()
+# #         point.pose.position = Point(*positions[i])
+# #         point.pose.orientation = Quaternion(*quaternion)
+# #         point.time_from_start = rospy.Duration(times[i])
+# #         goal.trajectory.points.append(point)
+
+# #     trajectory_client.send_goal(goal)
+# #     trajectory_client.wait_for_result()
+
+
+# def main():
+#     rospy.init_node('task_space', anonymous=True)
+#     rospy.Subscriber('/tf',TFMessage,tf_callback)
+#     joint_callback()
+#     send_cartesian_trajectory()
+#     rospy.spin()
+
+# if __name__ == "__main__":
+#     try:
+#         main()
+#     except rospy.ROSInterruptException:
+#         pass
+
+##########################################################     HOME POSITION   #######################
+
+
+
+
+import rospy
+import numpy as np
+import sys
+import actionlib
+from tf2_msgs.msg import TFMessage
+from cartesian_control_msgs.msg import FollowCartesianTrajectoryAction, FollowCartesianTrajectoryGoal, CartesianTrajectoryPoint
+from geometry_msgs.msg import Pose, Point, Quaternion
+from scipy.spatial.transform import Rotation as R    #python lib
+
+
+
+global linear_pos, cartesian_trajectory_controller,end_eff
+# CARTESIAN_TRAJECTORY_CONTROLLERS = [
+#     "pose_based_cartesian_traj_controller",
+#     "joint_based_cartesian_traj_controller",
+#     "forward_cartesian_traj_controller",
+# ]
+# cartesian_trajectory_controller = CARTESIAN_TRAJECTORY_CONTROLLERS[0]
+cartesian_trajectory_controller = "pose_based_cartesian_traj_controller"
+
+linear_pos = np.empty(3)
+quaternion = np.empty(4)
+end_eff = np.empty(3)
+
+def euler_to_quat(roll_arg,pitch_arg,yaw_arg):
+    r = R.from_euler('xyz',[roll_arg,pitch_arg,yaw_arg],degrees=False)
+    quat = r.as_quat()
+    return quat
+
+def joint_callback():
+    global linear_pos,quaternion
+    n = 6
+    alp = [np.pi/2, 0, 0, np.pi/2, -np.pi/2, 0]
+    a = [0, -0.24355, -0.2132, 0, 0, 0]
+    d = [0.15185, 0, 0, 0.13105, 0.08535, 0.0921]
+    
+ 
+    
+
+    th = [
+        np.array([ -0.06086141267885381, -3.904510875741476,1.840231720601217, 3.5767227846333007, -1.7778661886798304, 4.164084434509277]),
+        np.array([2.694200038909912, -0.053385929470398,  -1.5220253467559814, 3.267535849208496, -2.20729905763735, -3.7819090525256556]),
+        np.array([2.6942670345306396, -0.053393201237060595, -1.522813320159912, 3.2673379617878417, -1.2618702093707483, -3.7819982210742396]),
+        np.array([2.694455146789551, -1.0988002282432099, -1.6221636533737183, 4.671582861537598, -1.4588177839862269, -3.821932379399435]),
+        np.array([ 4.273403167724609, -1.4483108085444947,-1.5330666303634644, 4.568957968349121, -1.7348936239825647, -3.903097454701559])
+    ]
+    for j in th:
+        
+        th_for_forward_kin = j
+        
+        d_E_n = np.array([0, 0, 0.145])
+        T_i = np.eye(4)
+        for i in range(n):
+            T_i_i_m = np.array([
+                [np.cos(th_for_forward_kin[i]), -np.sin(th_for_forward_kin[i]) * np.cos(th_for_forward_kin[i]), np.sin(th_for_forward_kin[i]) * np.sin(alp[i]), a[i] * np.cos(th_for_forward_kin[i])],
+                [np.sin(th_for_forward_kin[i]), np.cos(th_for_forward_kin[i]) * np.cos(alp[i]), -np.cos(th_for_forward_kin[i]) * np.sin(alp[i]), a[i] * np.sin(th_for_forward_kin[i])],
+                [0, np.sin(alp[i]), np.cos(alp[i]), d[i]],
+                [0, 0, 0, 1]
+            ])
+            T_i_0 = T_i @ T_i_i_m
+            T_i = T_i_0
+        T_n_0 = T_i_0
+        P_E_0 = T_n_0 @ np.append(d_E_n, 1)
+        p_E_0 = P_E_0[:3]
+
+        # Extract rotation matrix from T_n_0
+        R_n_0 = T_n_0[:3, :3]
+
+        # Compute roll, pitch, and yaw from the rotation matrix
+        sy = np.sqrt(R_n_0[2, 2] ** 2 + R_n_0[2, 1] ** 2)
+        singular = sy < 1e-6
+
+        if not singular:
+            roll = np.arctan2(R_n_0[2, 1], R_n_0[2, 2])
+            pitch = np.arctan2(-R_n_0[2, 0], sy)
+            yaw = np.arctan2(R_n_0[1, 0], R_n_0[0, 0])
+        else:
+            roll = np.arctan2(-R_n_0[1, 2], R_n_0[1, 1])
+            pitch = np.arctan2(-R_n_0[2, 0], sy)
+            yaw = 0
+        
+        linear_pos = p_E_0
+
+        quaternion = euler_to_quat(roll,pitch,yaw)
+        #quaternion = np.array([0,0,0,1])
+        #quaternion = tf.transformations.quaternion_from_euler(roll,pitch,yaw)
+        print("Linear pose: ",linear_pos)
+        print(f"Roll: {roll}, pitch: {pitch}, yaw: {yaw}")
+        print("Quaternions: ",quaternion)
+
+
+
+def send_cartesian_trajectory():
+    global linear_pos, cartesian_trajectory_controller, quaternion
+    
+
+    linear_pos = np.array([0.387,-0.259,0.558])
+    quaternion = np.array([0.0,0.0,0,1])
+    # rospy.sleep(5)  # Wait for action server to start
+    goal = FollowCartesianTrajectoryGoal()
+    trajectory_client = actionlib.SimpleActionClient(
+        "{}/follow_cartesian_trajectory".format(cartesian_trajectory_controller),
+        FollowCartesianTrajectoryAction,
+    )
+    timeout = rospy.Duration(5)
+    if not trajectory_client.wait_for_server(timeout):
+        rospy.logerr("Could not reach controller action server.")
+        sys.exit(-1)
+    if linear_pos is None or linear_pos.size != 3:
+        rospy.logerr("Linear position is not set correctly.")
+        sys.exit(-1)
+    point = CartesianTrajectoryPoint()
+    point.pose.position = Point(*linear_pos)
+    point.pose.orientation = Quaternion(*quaternion)
+    point.time_from_start = rospy.Duration(6)
+    goal.trajectory.points.append(point)
+    
+    # Send the goal and wait for the result
+    result = trajectory_client.send_goal_and_wait(goal, rospy.Duration(5))
+    state = trajectory_client.get_state()
+    if state == actionlib.GoalStatus.SUCCEEDED:
+        rospy.loginfo("Goal succeeded!")
+    else:
+        rospy.logwarn("Goal failed with state: %s", state)
+
+def tf_callback(msg):
+    global end_eff
+    Xee = msg.transforms[0].transform.translation.x
+    Yee = msg.transforms[0].transform.translation.y
+    Zee = msg.transforms[0].transform.translation.z
+    end_eff = np.array([Xee, Yee, Zee])
+    print(end_eff)
+
+def main():
+    rospy.init_node('task_space_home', anonymous=True)
+    rospy.Subscriber('/tf', TFMessage, tf_callback)
+    send_cartesian_trajectory()
+    rospy.spin()
+
+if __name__ == "__main__":
+    try:
+        main()
+    except rospy.ROSInterruptException:
+        pass
+
+

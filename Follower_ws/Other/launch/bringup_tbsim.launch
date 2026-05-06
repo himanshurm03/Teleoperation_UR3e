@@ -1,0 +1,7 @@
+<launch>
+
+   <node pkg="ur_robot_driver" type="camera_nod2_test1.py" name="camera" output="screen"></node>
+   <node pkg="ur_robot_driver" type="teleop_vel_ctrl.py" name="ur3e" output="screen"></node>
+ 
+
+</launch>

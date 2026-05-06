@@ -1,0 +1,7 @@
+<launch>
+
+   <node pkg="ur_robot_driver" type="error_for_pose_quaternion_fix.py" name="robot_end_effector_controller" output="screen"></node>
+   
+   <node pkg="ur_robot_driver" type="impedance_learning2.py" name="haptic_force_controller" output="screen"></node>
+ 
+</launch> 

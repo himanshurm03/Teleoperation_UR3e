@@ -1,0 +1,6 @@
+<launch>
+
+   <node pkg="ur_robot_driver" type="confined_space2.py" name="robot_end_effector_controller" output="screen"></node>
+   <node pkg="ur_robot_driver" type="error_for_pose.py" name="haptic_force_controller" output="screen"></node>
+ 
+</launch> 

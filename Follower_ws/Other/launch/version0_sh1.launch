@@ -1,0 +1,24 @@
+<launch>
+  <node pkg="ur_robot_driver" type="samplehold.py" name="pose_filter" output="screen"/>
+  <node pkg="ur_robot_driver" type="version0_pose1.py" name="robot_end_effector_controller" output="screen"/>
+  <node pkg="ur_robot_driver" type="version0_force.py" name="haptic_force_controller" output="screen"/>
+  <node pkg="ur_robot_driver" type="camera_nod2_test1.py" name="camera" output="screen"/>
+</launch>
+
+<!-- <launch>
+ 
+  <node pkg="ur_robot_driver" type="samplehold.py" name="pose_filter" output="screen">
+    <param name="input_topic" value="/master_pose"/>
+    <param name="output_topic" value="/pose_processed"/>
+    <param name="timeout" value="0.05"/>
+  </node>
+
+
+  <node pkg="ur_robot_driver" type="version0_pose1.py" name="robot_end_effector_controller" output="screen"/>
+
+  
+  <node pkg="ur_robot_driver" type="version0_force.py" name="haptic_force_controller" output="screen"/>
+
+
+  <node pkg="ur_robot_driver" type="camera_nod2_test1.py" name="camera" output="screen"/>
+</launch> -->

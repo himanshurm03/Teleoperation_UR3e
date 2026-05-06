@@ -1,0 +1,6 @@
+<launch>
+
+   <node pkg="aiims_teleop" type="final_haptic_camera_node_2.py" name="camera1" output="screen"></node>
+   <node pkg="aiims_teleop" type="version0_2.py" name="haptic" output="screen"></node>
+   <node pkg="aiims_teleop" type="timestamp_logger_node.py" name="pose_timestamp_logger" output="screen" />
+</launch>
