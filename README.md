@@ -1,3 +1,6 @@
+# Teleoperation
+Teleoperation framework integrating a Geomagic Touch haptic device with a UR3e robot using ROS Noetic. Supports real-time pose control, haptic force feedback, delay measurement.
+
 # How to Run Codes
 
 ## Run Launch File from Both Leader and Follower Side
